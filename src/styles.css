@@ -24,3 +24,9 @@
   display: inline-block;
   font-family: monospace;
 }
+
+.msg-error{
+  color: red;
+  font-weight: 600;
+  font-size: 85%;
+}
