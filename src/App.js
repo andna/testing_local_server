@@ -11,6 +11,17 @@ function App() {
       setTenants(response);
     } catch(err) {
       setHasNetworkError(true);
+    }
+  }
+
+  const onDeleteTenant = async (id) => {
+    setIsLoading(true);
+    try {
+      const response = await Service.deleteTenant(id);
+      getTenants();
+    } catch(err) {
+      setIsLoading(false);
+      setHasNetworkError(true);
       console.error(err)
     }
   }
@@ -27,12 +38,26 @@ function App() {
       <>
         {hasNetworkError && <div className="dialog-container">
           <div className="dialog">
-            <p>We couldn't reach your network.</p>
-            <p>Please wait a few seconds and refresh this page.</p>
 
-            <button className="btn btn-primary"
-              onClick={()=>{ window.location.reload() }}
-            >Refresh</button>
+            <p>It seems your network is having troubles.</p>
+            {tenants.length === 0 ?
+                <>
+                  <p>Please wait a few seconds and refresh this page.</p>
+
+                  <button className="btn btn-primary"
+                          onClick={()=>{ window.location.reload() }}
+                  >Refresh</button>
+                </>
+                :
+                <>
+                  <p>Please wait a few seconds and try again.</p>
+
+                  <button className="btn btn-primary"
+                          onClick={()=>{ setHasNetworkError(false) }}
+                  >Ok</button>
+                </>
+
+            }
           </div>
         </div>}
         <div className="container">
@@ -59,17 +84,19 @@ function App() {
               </tr>
             </thead>
             <tbody>
-            {isLoading ?
-                <tr>
-                  <td colSpan={5} style={{textAlign:'center'}}>
-                    Loading...
-                  </td>
-                </tr>
-              :
-                <>{tenants.map(tenant => (
-                    <Tenant tenant={tenant} key={tenant.name}/>
-                  ))}</>
-            }
+              <>{tenants.map(tenant => (
+                  <Tenant key={tenant.name}
+                          tenant={tenant}
+                          handleDeleteTenant={onDeleteTenant}
+                  />
+              ))}</>
+              {isLoading &&
+              <tr>
+                <td colSpan={5} style={{textAlign:'center'}}>
+                  Loading...
+                </td>
+              </tr>
+              }
             </tbody>
           </table>
         </div>
