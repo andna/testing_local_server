@@ -10,6 +10,7 @@ function App() {
       setIsLoading(false);
       setTenants(response);
     } catch(err) {
+      setHasNetworkError(true);
       console.error(err)
     }
   }
@@ -20,9 +21,20 @@ function App() {
 
   const [tenants, setTenants] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasNetworkError, setHasNetworkError] = useState(false);
 
   return (
       <>
+        {hasNetworkError && <div className="dialog-container">
+          <div className="dialog">
+            <p>We couldn't reach your network.</p>
+            <p>Please wait a few seconds and refresh this page.</p>
+
+            <button className="btn btn-primary"
+              onClick={()=>{ window.location.reload() }}
+            >Refresh</button>
+          </div>
+        </div>}
         <div className="container">
           <h1>Tenants</h1>
           <ul className="nav nav-tabs">
