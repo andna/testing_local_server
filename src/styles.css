@@ -16,3 +16,11 @@
   width: 500px;
   max-width: 95vw;
 }
+
+.button-icon{
+  margin: -10px 0 0 10px;
+  font-size: 138%;
+  height: 0;
+  display: inline-block;
+  font-family: monospace;
+}

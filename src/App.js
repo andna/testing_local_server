@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Service } from './Service';
 import Tenant from './components/Tenant'
+import Adder from './components/Adder'
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
 
   const [tenants, setTenants] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
   const [hasNetworkError, setHasNetworkError] = useState(false);
 
   return (
@@ -100,30 +102,17 @@ function App() {
             </tbody>
           </table>
         </div>
-        <div className="container">
-          <button className="btn btn-secondary">Add Tenant</button>
+        <div className="container" >
+          <button className={`btn ${isAdding ? 'btn-secondary' : 'btn-primary'}`}
+                  onClick={() => {setIsAdding(!isAdding)}}>
+            Add Tenant
+            <span className="button-icon">
+              {isAdding ? 'x' : '+'}
+            </span>
+          </button>
         </div>
-        <div className="container">
-          <form>
-            <div className="form-group">
-              <label>Name</label>
-              <input className="form-control"/>
-            </div>
-            <div className="form-group">
-              <label>Payment Status</label>
-              <select className="form-control">
-                <option>CURRENT</option>
-                <option>LATE</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Lease End Date</label>
-              <input className="form-control"/>
-            </div>
-            <button className="btn btn-primary">Save</button>
-            <button className="btn">Cancel</button>
-          </form>
-        </div>
+        {isAdding && <Adder/>}
+
       </>
   );
 }
