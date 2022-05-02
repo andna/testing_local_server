@@ -5,6 +5,20 @@ import Adder from './components/Adder'
 
 function App() {
 
+
+  const tabs = [
+    {id: 'all', label: 'All'},
+    {id: 'late', label: 'Payment is late'},
+    {id: 'inAMonth', label: 'Lease ends in less than a month'}
+  ]
+
+  const [tenants, setTenants] = useState([]);
+  const [filteredTenants, setFilteredTenants] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
+  const [hasNetworkError, setHasNetworkError] = useState(false);
+  const [activeTab, setActiveTab] = useState(tabs[0].id);
+
   const getTenants = async () => {
     try {
       const response = await Service.getTenants();
@@ -19,7 +33,9 @@ function App() {
     setIsLoading(true);
     try {
       const response = await Service.deleteTenant(id);
-      getTenants();
+      if(response === 'OK'){
+        getTenants();
+      }
     } catch(err) {
       setIsLoading(false);
       setHasNetworkError(true);
@@ -31,10 +47,19 @@ function App() {
     getTenants()
   }, [])
 
-  const [tenants, setTenants] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAdding, setIsAdding] = useState(false);
-  const [hasNetworkError, setHasNetworkError] = useState(false);
+  useEffect(()=> {
+    if(tenants && tenants.length > 0){
+      setFilteredTenants(tenants)
+    }
+  }, [tenants])
+
+  useEffect(()=> {
+    if(activeTab){
+      //setFilteredTenants(tenants)
+    }
+  }, [activeTab])
+
+
 
   return (
       <>
@@ -65,15 +90,14 @@ function App() {
         <div className="container">
           <h1>Tenants</h1>
           <ul className="nav nav-tabs">
-            <li className="nav-item">
-              <a className="nav-link active" href="#">All</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Payment is late</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Lease ends in less than a month</a>
-            </li>
+            {tabs.map(tab => <li className="nav-item" key={tab.id}>
+              <a
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`nav-link ${activeTab === tab.id ? 'active' : ''}`}
+                  href="#">
+                {tab.label}
+              </a>
+            </li>)}
           </ul>
           <table className="table">
             <thead>
@@ -86,7 +110,7 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              <>{tenants.map(tenant => (
+              <>{filteredTenants.map(tenant => (
                   <Tenant key={tenant.name}
                           tenant={tenant}
                           handleDeleteTenant={onDeleteTenant}
