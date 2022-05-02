@@ -64,7 +64,12 @@ function App() {
           newFilteredTenants = tenants.filter(tenant => tenant.paymentStatus === 'LATE');
           break;
         case tabs[2].id:
-          newFilteredTenants = tenants;
+          newFilteredTenants = tenants.filter(tenant => {
+            const today = new Date();
+            const oneMonthAgo = today.setMonth(today.getMonth() - 1);
+            const tenantLease = new Date(tenant.leaseEndDate);
+            return tenantLease > oneMonthAgo
+          });
           break;
       }
       setFilteredTenants(newFilteredTenants)
