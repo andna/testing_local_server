@@ -51,7 +51,8 @@ export default function Adder({handleAdd}) {
                 <label>Lease End Date</label>
                 <input className="form-control"/>
             </div>
-            <button className="btn btn-primary">Save</button>
+            <i>Adding Tenants coming soon... </i>
+            <button className="btn btn-secondary" disabled>Save</button>
             <button className="btn">Cancel</button>
         </form>
     </div>
