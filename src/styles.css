@@ -37,3 +37,6 @@
 .header-link.active{
   text-decoration: underline;
 }
+.header-link:last-child{
+  pointer-events: none;
+}

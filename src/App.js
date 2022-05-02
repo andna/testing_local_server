@@ -167,12 +167,31 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              <>{filteredTenants.map(tenant => (
-                  <Tenant key={tenant.name}
-                          tenant={tenant}
-                          handleDeleteTenant={onDeleteTenant}
-                  />
-              ))}</>
+              <>{
+                filteredTenants && filteredTenants.length > 0
+                  ?
+                    <>
+                      { filteredTenants.map(tenant => (
+                          <Tenant key={tenant.name}
+                                  tenant={tenant}
+                                  handleDeleteTenant={onDeleteTenant}
+                          />
+                      ))}
+                    </>
+                    :
+                    <>
+                      {!isLoading &&
+                        <tr>
+                        <td colSpan={5} style={{textAlign:'center'}}>
+                        Couldn't find tenants.
+                        </td>
+                        </tr>
+
+                      }
+                  </>
+
+
+               }</>
               {isLoading &&
               <tr>
                 <td colSpan={5} style={{textAlign:'center'}}>
