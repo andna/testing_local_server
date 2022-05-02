@@ -30,3 +30,10 @@
   font-weight: 600;
   font-size: 85%;
 }
+
+.header-link {
+  cursor: pointer;
+}
+.header-link.active{
+  text-decoration: underline;
+}

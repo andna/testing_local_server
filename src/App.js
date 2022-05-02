@@ -12,12 +12,24 @@ function App() {
     {id: 'inAMonth', label: 'Lease ends in less than a month'}
   ]
 
+
+
+  const headers = [
+    {id: 'id', label: '#'},
+    {id: 'name', label: 'Name'},
+    {id: 'paymentStatus', label: 'Payment Status'},
+    {id: 'leaseEndDate', label: 'Lease End Date'},
+    {id: 'actions', label: 'Actions'},
+  ]
+
+
   const [tenants, setTenants] = useState([]);
   const [filteredTenants, setFilteredTenants] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [hasNetworkError, setHasNetworkError] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs[0].id);
+  const [activeSort, setActiveSort] = useState(headers[0].id);
 
   const getTenants = async () => {
     try {
@@ -54,7 +66,11 @@ function App() {
   }, [tenants])
 
   useEffect(()=> {
-    if(activeTab){
+    filerAndSortTenants()
+  }, [activeTab, activeSort])
+
+  const filerAndSortTenants = () => {
+    if(activeTab && activeSort){
       let newFilteredTenants = [];
       switch (activeTab){
         case tabs[0].id:
@@ -72,10 +88,33 @@ function App() {
           });
           break;
       }
+      switch (activeSort){
+
+        case headers[0].id:
+          newFilteredTenants = newFilteredTenants.sort(function(a, b) {
+            return a.id - b.id;
+          })
+          break;
+        case headers[1].id:
+          newFilteredTenants = newFilteredTenants.sort(function(a, b) {
+            return a.name.localeCompare(b.name);
+          })
+          break;
+        case headers[2].id:
+          newFilteredTenants = newFilteredTenants.sort(function(a, b) {
+            return a.paymentStatus.localeCompare(b.paymentStatus);
+          })
+          break;
+        case headers[3].id:
+          newFilteredTenants = newFilteredTenants.sort(function(a, b) {
+            return new Date(a.leaseEndDate).getTime() - new Date(b.leaseEndDate).getTime();
+          })
+          break;
+      }
+      console.log('should be ordering by:',activeSort, newFilteredTenants)
       setFilteredTenants(newFilteredTenants)
     }
-  }, [activeTab])
-
+  }
 
 
   return (
@@ -119,11 +158,12 @@ function App() {
           <table className="table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Payment Status</th>
-                <th>Lease End Date</th>
-                <th>Actions</th>
+                {headers.map(header => <th
+                    className={`header-link ${activeSort === header.id ? 'active' : ''}`}
+                                           onClick={() => setActiveSort(header.id)}
+                                           key={header.id}>
+                  {header.label}
+                </th>)}
               </tr>
             </thead>
             <tbody>
