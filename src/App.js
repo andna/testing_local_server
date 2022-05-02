@@ -55,7 +55,19 @@ function App() {
 
   useEffect(()=> {
     if(activeTab){
-      //setFilteredTenants(tenants)
+      let newFilteredTenants = [];
+      switch (activeTab){
+        case tabs[0].id:
+          newFilteredTenants = tenants;
+          break;
+        case tabs[1].id:
+          newFilteredTenants = tenants.filter(tenant => tenant.paymentStatus === 'LATE');
+          break;
+        case tabs[2].id:
+          newFilteredTenants = tenants;
+          break;
+      }
+      setFilteredTenants(newFilteredTenants)
     }
   }, [activeTab])
 
